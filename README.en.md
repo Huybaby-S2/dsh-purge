@@ -4,7 +4,7 @@
 
 <h1 align="center">⚔️ DeepSeek Harness cybersecurity red-team tool (dsh-purge)</h1>
 
-<p align="center"><strong>Version 1.1.75</strong></p>
+<p align="center"><strong>Version 1.1.77</strong></p>
 
 <p align="center">
   <em>DeepSeek Harness jailbreak: every model, swap prompts per model. Default prompt for 小码酱. Please star ⭐ If you build on this, see Attribution required.</em>
@@ -15,7 +15,7 @@
   <a href="https://github.com/YuJunZhiXue/dsh-purge/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-65a30d?style=flat" alt="MIT license"></a>
   <a href="https://awesome-dsh-plugin.com"><img src="https://awesome-dsh-plugin.com/badge.svg" alt="awesome · DSH plugin"></a>
   <a href="https://deepseek.stream/plugins/dsh-purge"><img src="https://img.shields.io/badge/Hub-dsh--purge-1a73e8" alt="DeepSeek Harness Hub"></a>
-  <a href="https://www.deepseek.com/harness/"><img src="https://img.shields.io/badge/dsh-0.2.1--rc.2-blue" alt="DSH"></a>
+  <a href="https://www.deepseek.com/harness/"><img src="https://img.shields.io/badge/dsh-0.2.1--rc.5-blue" alt="DSH"></a>
   <br>
   <img src="https://img.shields.io/badge/Node.js-%3E%3D18-339933?logo=node.js&logoColor=fff" alt="Node.js">
   <img src="https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=000" alt="JavaScript">
@@ -35,7 +35,7 @@
 >
 > This has always been an after-hours project. If it helped you, the [sponsor](#sponsor) addresses are below. README [ad slots](#ad) are also open, to help keep the lights on.
 
-> **Official Web and the official desktop app are both supported.** Official `dsh web` uses profile `web`. The official desktop EXE (DeepSeek Harness **0.2.1-rc.2**) uses profile `desktop`. Install and Apply them separately. This release targets dsh 0.2 only. Older dsh builds need the matching older plugin. Community Desktop is not maintained.
+> **Official Web and the official desktop app are both supported.** Official `dsh web` uses profile `web`. The official desktop EXE (DeepSeek Harness **0.2.1-rc.5**, rc.3 / rc.2 still work) uses profile `desktop`. Install and Apply them separately. This release targets dsh 0.2 only. Older dsh builds need the matching older plugin. Community Desktop is not maintained.
 >
 > Adding the plugin to a profile does not patch the host. Click **dsh-purge** beside the session title → **Clean** → **Apply**. A successful Apply restarts; an unfinished Apply does not. After the restart, start a new chat — that is when the inject enters the session.
 >
@@ -185,9 +185,11 @@ WeChat name **「老张的ai科技」**, same handle as the live-room viewer boa
 
 ## Supported hosts
 
-The latest plugin supports **dsh 0.2** only — do not apply it to 0.1.x. dsh 0.2.1 dropped the `{{cwd}}` prompt variable and the `toolFilter` option; 1.1.73 adapts to that, and 1.1.74 fixes the Windows Apply path that always raised the crash dialog while never swapping `app.asar`. 1.1.75 merges the community branch: a host Settings page, approval and audit, a proxied update channel, an inject-position switch, and patch #93. dsh 0.2.0 and older can stay on 1.1.72.
+The latest plugin supports **dsh 0.2** only — do not apply it to 0.1.x. dsh 0.2.1 dropped the `{{cwd}}` prompt variable and the `toolFilter` option; 1.1.73 adapts to that, and 1.1.74 fixes the Windows Apply path that always raised the crash dialog while never swapping `app.asar`. 1.1.75 merges the community branch: a host Settings page, approval and audit, a proxied update channel, an inject-position switch, and patch #93. 1.1.76 adapts to official desktop **0.2.1-rc.3** — all 87 patch anchors are byte-identical to rc.2, and rc.3 only adds one `entry-customization` row to the `dsh-web-app` layer, which does not collide with this plugin — and adds a postinstall that writes `dsh.profile.bundles` for pnpm installs. dsh 0.2.0 and older can stay on 1.1.72.
 
-- **dsh 0.2** (official desktop **0.2.1-rc.2** / official `dsh web`): use **1.1.75** or newer. This page installs that line.
+1.1.77 updates the compatibility declaration for official desktop **0.2.1-rc.5**. `dshTarget` only declares the target; the host does not read it. Per-anchor dry status of the 87 patches is identical across clean official rc.3/rc.5 host trees; a real apply on a full rc.5 tree followed by two repeat applies is idempotent (applied=75 + na=12, zero changes on the third pass), with every touched file passing `node --check`. The single `missing_file` is the `desktop-shell` patch — the extracted tree has no shell `main.js`, which exists on a real desktop install, so it is not an anchor regression.
+
+- **dsh 0.2** (official desktop **0.2.1-rc.5** / **0.2.1-rc.3** / **0.2.1-rc.2** / official `dsh web`): use **1.1.77** or newer. This page installs that line.
 - **dsh 0.1.7** (incl. rc.1 / rc.2): use **1.1.39** or older — pick the tag on [Releases](https://github.com/YuJunZhiXue/dsh-purge/releases).
 
 Unmatched patches stay pending or skipped; nothing is rewritten blindly.
@@ -217,7 +219,7 @@ Hub one-click on [dsh-plugin.org](https://dsh-plugin.org/plugins/yujunzhixue/dsh
 For the desktop client you can also click the button (`dsh://` deep link):
 
 <p align="center">
-  <a href="dsh://plugin/install?id=dsh-purge&name=dsh-purge&version=1.1.75&repo=dawanglaohu%2Fdsh-purge&permissions=%E7%B3%BB%E7%BB%9F%E6%8F%90%E7%A4%BA%E8%AF%8D%E6%B3%A8%E5%85%A5%2C%E6%9C%AC%E6%9C%BA%E8%A1%A5%E4%B8%81%2C%E8%AE%BE%E7%BD%AE%E9%A1%B5&downloadUrl=https%3A%2F%2Fgithub.com%2Fdawanglaohu%2Fdsh-purge%2Farchive%2Frefs%2Fheads%2Fmaster.tar.gz"><strong>Install in desktop client</strong></a>
+  <a href="dsh://plugin/install?id=dsh-purge&name=dsh-purge&version=1.1.77&repo=dawanglaohu%2Fdsh-purge&permissions=%E7%B3%BB%E7%BB%9F%E6%8F%90%E7%A4%BA%E8%AF%8D%E6%B3%A8%E5%85%A5%2C%E6%9C%AC%E6%9C%BA%E8%A1%A5%E4%B8%81%2C%E8%AE%BE%E7%BD%AE%E9%A1%B5&downloadUrl=https%3A%2F%2Fgithub.com%2Fdawanglaohu%2Fdsh-purge%2Farchive%2Frefs%2Fheads%2Fmaster.tar.gz"><strong>Install in desktop client</strong></a>
 </p>
 
 ### After the command: three steps
@@ -229,6 +231,16 @@ Adding the plugin to a profile does **not** patch `@deepseek-ai` by itself.
 3. A successful **Apply** restarts once so patches load. It does not restart if it did not finish.
 
 Web controls affect Web only; desktop controls affect the desktop app only. Do not Apply one host from the other.
+
+### Installed but nothing happened? Check these five in order
+
+1. **Apply was never pressed.** Installing into a profile only starts the plugin; it never writes the host on its own. `autoApplyOnStart` defaults to `false`, so boot does not patch, and on desktop with a sealed `app.asar` the boot self-heal is blocked too (it waits for Apply). Click **dsh-purge** beside the session title → **Clean** → **Apply**.
+2. **The Settings page is disabled in your own profile.** If the profile-layer `cordis.patch.yml` contains `- id: ui-settings` followed by `enabled: false`, the Settings page never appears and the README's "open Settings and Apply" route is a dead end — use the dock beside the session title instead.
+3. **The bundle was skipped silently.** A `dsh: skipping profile bundle "dsh-purge": ...` line at boot means that layer never joined the composition (package unresolvable, no `dsh.bundle`, or the compatibility gate said no), while the UI may still show it as installed. Verify `~/.dsh/profiles/<name>/package.json` lists `dsh-purge` in `dsh.profile.bundles`, and that `node_modules/dsh-purge/package.json` declares `dsh.bundle.patch`.
+4. **The host was upgraded and the patches were not reapplied.** The official updater replaces `resources/app` with a fresh sealed `app.asar`; patches live in the unpacked directory and the running process cannot read them. `purge_status` reporting `app.asar / still sealed` is this case — press Apply again.
+5. **It was installed into the other host.** A Web install does nothing for the desktop app and vice versa. The `DSH_HOME` and `ai_base` printed by `/purge status` must be the ones you actually run.
+
+The first three can be checked in one go: run `node node_modules/dsh-purge/scripts/verify-mount.mjs` from the profile directory (add `--profile <name>` for another profile). It is read-only and prints bundle registration, package resolution, the body row, and duplicate ids; any failure exits non-zero.
 
 ### How to tell it installed
 

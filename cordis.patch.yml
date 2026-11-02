@@ -33,9 +33,6 @@
     # section that still mentions {{cwd}} fails to assemble.
     personaSuffix: ""
 
-- id: dsh-purge
-  inject: [systemPrompt, tools]
-
 - insert:
     - id: dsh-purge
       name: 'dsh-purge'

@@ -1,3 +1,44 @@
+# 1.1.77
+
+## 中文
+
+- 版本 **1.1.77**，适配声明更新至 DeepSeek Harness **0.2.1-rc.5**。`dshTarget` 改为 `0.2.1-rc.5`，仅声明目标版本，宿主不读它。87 条补丁锚点在官方 clean rc.3 / rc.5 宿主树上逐条比对状态完全一致；对 rc.5 全量树真实 apply 后三次重复 apply 幂等（applied=75 + na=12，第三次零变化）、逐文件 `node --check` 全部通过。
+- 官方 rc.4 修复 ACP 模式诊断日志污染 stdout 的问题，并修正会话视图提示框。
+- 官方 rc.5 的 `reasoningText()` 在显示思考内容前隐藏前导 `<signature>…</signature>` 及其后换行。`conversation.chat.reasoning.body` 的 owner props 变为 `{rawText,text,running}`：`text` 是展示文本，`rawText` 保留原始模型输出；Content Factory 的输入仍为 `{text,running,labels?}`。本插件的 `client.js` 与 `lib/redteam/client.js` 不消费该 body 插槽，无需迁移。
+- 装配静态对比：`dsh-app-boot` 的 rc.3 与 rc.5 逐字节相同；rc.5 的 `dsh-web-app/cordis.patch.yml`（22981 字节）与 rc.3 也逐字节相同，`entry-customization` 行在 rc.2→rc.3 时加入并一直保留到 rc.5，与本插件 `insert` 行无 id/name 冲突。87 条补丁锚点在官方 clean rc.3 / rc.5 两棵 42 包树上逐条比对状态完全一致，且对 rc.5 全量宿主树真实 apply 后三次重复 apply 幂等（applied=75 + na=12，第三次 changed=0）、逐文件 `node --check` 全部通过；唯一 `missing_file` 是 `desktop-shell` 补丁——提取树里没有壳的 `main.js`，真机桌面宿主上该文件存在，不是锚点回归。
+- 三份 README 的版本、支持版本和 `dsh://` 安装链接已同步；`lib/anchors.js` 的示例 host 更新为 rc.5。
+
+## English
+
+- Version **1.1.77** updates the compatibility declaration for DeepSeek Harness **0.2.1-rc.5**. `dshTarget` is only a declaration; the host never reads it. Per-anchor dry status of the 87 patches is identical across clean official rc.3/rc.5 host trees; a real apply on a full rc.5 tree followed by two repeat applies is idempotent (applied=75 + na=12, zero changes on the third pass), with every touched file passing `node --check`.
+- Official rc.4 fixes diagnostics polluting stdout in ACP mode and corrects conversation-view tooltips.
+- In official rc.5, `reasoningText()` hides a leading `<signature>…</signature>` and its following newlines before displaying reasoning. The owner props for `conversation.chat.reasoning.body` are now `{rawText,text,running}`: `text` is the display text and `rawText` preserves the raw model output. Content Factory inputs remain `{text,running,labels?}`. Neither `client.js` nor `lib/redteam/client.js` consumes this body slot, so no migration is needed.
+- Static composition comparison: `dsh-app-boot` is byte-identical between rc.3 and rc.5; so is `dsh-web-app/cordis.patch.yml` (22981 bytes) — the `entry-customization` row added in rc.2→rc.3 is still present in rc.5 and has no id/name collision with this plugin's `insert` rows. Per-anchor dry status of all 87 patches is identical across clean official rc.3 and rc.5 42-package trees, and a real apply on a full rc.5 host tree followed by two repeat applies is idempotent (applied=75 + na=12, zero changes on the third pass) with every touched file passing `node --check`. The single `missing_file` is the `desktop-shell` patch — the extracted tree has no shell `main.js`; on a real desktop install that file exists, so it is not an anchor regression.
+- The three READMEs now agree on the version, supported hosts, and `dsh://` install link; the example host in `lib/anchors.js` is now rc.5.
+
+# 1.1.76
+
+## 中文
+
+- 版本 **1.1.76**，适配 DeepSeek Harness **0.2.1-rc.3**。`dshTarget` 改为 `0.2.1-rc.3`（仅文档字段，宿主不读它）。
+- **补丁表不需要改**：把官方 0.2.1-rc.3 桌面安装包的 `app.asar` 拆开逐文件对账，87 条补丁覆盖的 15 个宿主包，除 `package.json` 版本号外**全部逐字节相同**；rc.3 相对 rc.2 在补丁面上唯一的变化是 `@deepseek-ai/dsh-web-app/cordis.patch.yml` 多了一行 `entry-customization`（插在 `ui-agent-preset` 之后、`ui-settings-session-log` 之前），与本插件的 `insert` 行没有 id / name 冲突。`dsh-app-boot` 两个版本同为 203572 字节、SHA256 一致，装配与兼容门逻辑零变化。
+- **`cordis.patch.yml` 去掉一个死块**：原文件里 `- id: dsh-purge` + `inject: [systemPrompt, tools]` 出现两次（一次在 `insert` 之外、一次在 `insert` 之内）。`insert` 之外那份只改不插，在干净 profile 上只会打一条 `patch: entry "dsh-purge" not found`，`inject` 从未生效。删掉它之后实测组装结果仍是 199 行、`dsh-purge` 相关 4 行、无重复 id，只是少一条警告。**没有照抄上游 1.1.77 的「只改不插」改法**：本机实测那样会让 `dsh-purge` 本体行整条消失（198 行 / 只剩 3 行红队行），插件根本不挂载 —— 上游那句「本体已经在 profile.bundles 里入队」是错的，bundle 层只贡献 patch 层，entry 行必须由某个 patch 自己 `insert`。
+- **新增 `scripts/ensure-profile-bundle.mjs` 并挂 `postinstall`**：`pnpm add` / `npm install` 只写 `dependencies`，不会把插件写进 `dsh.profile.bundles`，于是装完不生效。脚本从 `INIT_CWD` / `npm_config_local_prefix` / `cwd` 向上最多 8 层找 profile（`name` 以 `dsh-profile-` 开头，或带 `dsh.profile.bundles` 数组），已存在就打印 `already in bundles` 退出 0，否则追加并按宿主的格式（2 空格 + 末尾换行）写回 `package.json`。找不到 profile 直接 exit 0，不会污染插件自身的 `npm install`。官方「插件管理」装包时自己会 `reconcile` 写 bundles（`dsh-plugin-manager` 的 `reconcile`），那条路不需要本脚本；它只补 `pnpm add` / `npm install` 这类裸装场景。
+- **`dsh.client.inject` 清掉两个不存在的包名**：`@deepseek-ai/dsh-client-runtime` 与 `@deepseek-ai/dsh-client-ui-slots` 在 rc.2 现网宿主和 rc.3 出厂 asar 的 63 个 `dsh-client-*` 里都不存在（`dsh-client-runtime` 连 npm 上都没有该版本线）。客户端装配对 `inject` 找不到是静默跳过，所以它不阻塞加载，但属无效声明。真正提供 `slots` 服务的是 `dsh-client-ui-renderer`，已按这个补上。
+- 文档：README 三份与 `lib/anchors.js`、`docs/merge-plan-community.md` 里的 `0.2.1-rc.2` 字样更新为 rc.3（或标明 rc.2 同样可用）。`docs/merge-plan-community.md` 里「nightly 最新仍是 rc.2、rc.3 全 404」的旧结论已标注过时。
+- **新增 `scripts/verify-mount.mjs`（只读自检）**：`node node_modules/dsh-purge/scripts/verify-mount.mjs [--profile desktop] [--home <DSH_HOME>] [--bin <宿主 dsh/package.json>]`。直接用宿主自己的 `dsh-app-boot` 走 `loadProfile` + `composeEntries`，逐项打印：`dsh.profile.bundles` 是否登记、`node_modules/dsh-purge` 是否解析到、`dsh.bundle.patch` 是否声明、bundle 有没有被 `skippedBundles` 跳过、组装结果里有没有 `id=dsh-purge` 的本体行（并打印它的 `inject`）、有没有重复 id。任一项不过就非零退出。桌面版宿主不在 profile 里时会退回插件自己的 `listDesktopPackageRoots({discover:true})` 去定位。
+- **升级到 rc.3 后要重新点一次「应用」**：官方升级会把 `resources/app` 换成密封的 `app.asar`（rc.3 是 182434783 字节，与现网 `unpacked-asar.json` 里记的 182794869 不同），插件必须在解开后的目录里打补丁。`autoApplyOnStart` 默认 `false`，桌面 + 密封 asar 时启动自愈也被 `settleMayReapply` 挡住，所以装完不点「应用」一定不生效。
+
+## English
+
+- Version **1.1.76**, adapted to DeepSeek Harness **0.2.1-rc.3**. `dshTarget` moves to `0.2.1-rc.3` (documentation only — the host never reads it).
+- **No patch-table change is needed.** Unpacking the official 0.2.1-rc.3 desktop `app.asar` and diffing it file by file, all 15 host packages the 87 patches touch are **byte-identical** apart from their `package.json` version. The only semantic delta from rc.2 is one extra `entry-customization` row in `@deepseek-ai/dsh-web-app/cordis.patch.yml` (between `ui-agent-preset` and `ui-settings-session-log`), which has no id or name collision with this plugin's `insert` rows. `dsh-app-boot` is 203572 bytes with the same SHA256 in both versions, so composition and the compatibility gate are unchanged.
+- **`cordis.patch.yml` drops a dead block.** `- id: dsh-purge` + `inject: [systemPrompt, tools]` appeared twice — once outside `insert`, once inside it. The outside copy only modifies an entry that a clean profile never creates, so it produced `patch: entry "dsh-purge" not found` and its `inject` never took effect. Removing it keeps the composition at 199 rows with 4 `dsh-purge` rows and no duplicate ids, and only removes the warning. **Upstream 1.1.77's modify-only form was deliberately not copied**: measured on this host it makes the `dsh-purge` row vanish entirely (198 rows, only the 3 red-team rows left), so the plugin never mounts — a bundle layer only contributes patch layers, and every entry row has to be `insert`ed by some patch file.
+- **New `scripts/ensure-profile-bundle.mjs` wired to `postinstall`.** `pnpm add` / `npm install` write `dependencies` only and never touch `dsh.profile.bundles`, which is exactly how an install ends up doing nothing. The script walks up to 8 levels from `INIT_CWD` / `npm_config_local_prefix` / `cwd` looking for a profile (`name` starting with `dsh-profile-`, or a `dsh.profile.bundles` array), prints `already in bundles` and exits 0 when present, otherwise appends the name and rewrites `package.json` in the host's own format (2-space indent, trailing newline). No profile found exits 0 silently, so the plugin's own `npm install` is unaffected.
+- **`dsh.client.inject` loses two names that do not exist.** `@deepseek-ai/dsh-client-runtime` and `@deepseek-ai/dsh-client-ui-slots` are absent from all 63 `dsh-client-*` packages in both the rc.2 host and the rc.3 asar (`dsh-client-runtime` has no such version line on npm at all). The client graph skips unknown `inject` names silently, so this never blocked loading, but the declarations were dead. The real provider of the `slots` service is `dsh-client-ui-renderer`, which now takes their place.
+- Docs: the three READMEs plus `lib/anchors.js` and `docs/merge-plan-community.md` move from `0.2.1-rc.2` to rc.3 (or note that rc.2 still works). The stale "nightly is still rc.2, rc.3 is 404" line in the merge plan is marked as outdated.
+- **Press Apply once after upgrading to rc.3.** The official updater replaces `resources/app` with a sealed `app.asar` (182434783 bytes for rc.3, versus the 182794869 recorded in `unpacked-asar.json`), and the plugin can only patch the unpacked directory. `autoApplyOnStart` defaults to `false`, and on desktop with a sealed asar `settleMayReapply` blocks the boot self-heal, so skipping Apply guarantees nothing takes effect.
+
 # 1.1.75
 
 ## 中文

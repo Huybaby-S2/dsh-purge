@@ -4,7 +4,7 @@
 
 <h1 align="center">⚔️ DeepSeek Harness 网络安全红队工具（dsh-purge）</h1>
 
-<p align="center"><strong>Version 1.1.75</strong></p>
+<p align="center"><strong>Version 1.1.77</strong></p>
 
 <p align="center">
   <em>DeepSeek Harness 破甲：让所有模型都能破甲，不同模型可换不同提示词；默认提示词面向国模「小码酱」。Jailbreak for every model — swap prompts per model. 求 Star 收藏 ⭐ 如要二开，请查看署名要求部分</em>
@@ -35,7 +35,7 @@
 >
 > 这个项目一直是业余在做。若它对你有帮助，欢迎看看下面的 [赞助](#sponsor)；也在征集 README [广告位](#ad)，换一点把项目撑下去的空间。
 
-> **官方 Web 和官方桌面端都支持。** 官方 `dsh web` 用 profile `web`；官方桌面 EXE（DeepSeek Harness **0.2.1-rc.2**）用 profile `desktop`。两边分开安装、分开点「应用」。当前版本只适配 dsh 0.2；更早的 dsh 用对应的老版本插件。社区桌面端不维护。
+> **官方 Web 和官方桌面端都支持。** 官方 `dsh web` 用 profile `web`；官方桌面 EXE（DeepSeek Harness **0.2.1-rc.5**，rc.3 / rc.2 同样可用）用 profile `desktop`。两边分开安装、分开点「应用」。当前版本只适配 dsh 0.2；更早的 dsh 用对应的老版本插件。社区桌面端不维护。
 >
 > 写进 profile 还不会改宿主。点会话标题旁的 **dsh-purge** → **清洗** → **应用**。成功会自动重启；补丁没打完不重启。重启后新开一轮对话，注入才进当前会话。
 >
@@ -184,9 +184,11 @@ Harness 不只是把问题交给模型。它还会在运行时改提示词、审
 
 ## 适配范围
 
-最新版只支持 **dsh 0.2**，不要拿它去打 0.1.x。0.2.1 移除了 `{{cwd}}` 提示词变量与 `toolFilter` 配置项，1.1.73 起已适配；1.1.74 修掉 Windows 上点「应用」必弹崩溃框、`app.asar` 却换不掉的问题；1.1.75 把社区分支的更新合并进来（设置页、审批与审计、更新通道代理、注入位置、补丁 #93）。0.2.0 及更早仍可用 1.1.72。
+最新版只支持 **dsh 0.2**，不要拿它去打 0.1.x。0.2.1 移除了 `{{cwd}}` 提示词变量与 `toolFilter` 配置项，1.1.73 起已适配；1.1.74 修掉 Windows 上点「应用」必弹崩溃框、`app.asar` 却换不掉的问题；1.1.75 把社区分支的更新合并进来（设置页、审批与审计、更新通道代理、注入位置、补丁 #93）；1.1.76 适配官方桌面 **0.2.1-rc.3**（87 条补丁锚点与 rc.2 逐字节相同，rc.3 只在 `dsh-web-app` 层新增了 `entry-customization` 一行，与本插件无冲突），并补上 pnpm 安装时自动写 `dsh.profile.bundles` 的 postinstall。0.2.0 及更早仍可用 1.1.72。
 
-- **dsh 0.2**（官方桌面 **0.2.1-rc.2** / 官方 `dsh web`）：用 **1.1.75** 及以上。本页命令装的就是这一档。
+1.1.77 将适配声明更新至官方桌面 **0.2.1-rc.5**。`dshTarget` 仅声明目标版本，宿主不读它；87 条补丁锚点在官方 clean rc.3 / rc.5 宿主树上逐条比对状态完全一致，对 rc.5 全量树真实 apply 后三次重复 apply 幂等、逐文件语法检查通过（唯一 `missing_file` 是提取树里没有壳 `main.js` 的 `desktop-shell` 补丁，真机桌面宿主上该文件存在，非锚点回归）。
+
+- **dsh 0.2**（官方桌面 **0.2.1-rc.5** / **0.2.1-rc.3** / **0.2.1-rc.2** / 官方 `dsh web`）：用 **1.1.77** 及以上。本页命令装的就是这一档。
 - **dsh 0.1.7**（含 rc.1 / rc.2）：用 **1.1.39** 及更早 —— 在 [Releases](https://github.com/YuJunZhiXue/dsh-purge/releases) 里选对应标签。
 
 对不上的补丁会显示待应用或跳过，不会乱改文件。
@@ -216,7 +218,7 @@ dsh plugin --profile desktop add dsh-purge
 桌面客户端也可以点按钮（`dsh://` 唤起）：
 
 <p align="center">
-  <a href="dsh://plugin/install?id=dsh-purge&name=dsh-purge&version=1.1.75&repo=dawanglaohu%2Fdsh-purge&permissions=%E7%B3%BB%E7%BB%9F%E6%8F%90%E7%A4%BA%E8%AF%8D%E6%B3%A8%E5%85%A5%2C%E6%9C%AC%E6%9C%BA%E8%A1%A5%E4%B8%81%2C%E8%AE%BE%E7%BD%AE%E9%A1%B5&downloadUrl=https%3A%2F%2Fgithub.com%2Fdawanglaohu%2Fdsh-purge%2Farchive%2Frefs%2Fheads%2Fmaster.tar.gz"><strong>唤起客户端一键安装</strong></a>
+  <a href="dsh://plugin/install?id=dsh-purge&name=dsh-purge&version=1.1.77&repo=dawanglaohu%2Fdsh-purge&permissions=%E7%B3%BB%E7%BB%9F%E6%8F%90%E7%A4%BA%E8%AF%8D%E6%B3%A8%E5%85%A5%2C%E6%9C%AC%E6%9C%BA%E8%A1%A5%E4%B8%81%2C%E8%AE%BE%E7%BD%AE%E9%A1%B5&downloadUrl=https%3A%2F%2Fgithub.com%2Fdawanglaohu%2Fdsh-purge%2Farchive%2Frefs%2Fheads%2Fmaster.tar.gz"><strong>唤起客户端一键安装</strong></a>
 </p>
 
 ### 装完都要做这三步
@@ -228,6 +230,16 @@ dsh plugin --profile desktop add dsh-purge
 3. 「应用」成功后会自动重启一次，让补丁进入当前进程。没做完不会重启。
 
 Web 的控件只动 Web，桌面端的只动桌面应用。不要在一个宿主里点另一个宿主的应用。
+
+### 装完没生效？按顺序查这五条
+
+1. **没点「应用」。** 装进 profile 只是让插件跑起来，它自己不会改宿主。`autoApplyOnStart` 默认 `false`，启动时不写宿主；桌面端在 `app.asar` 还密封时启动自愈也会被挡（等用户点应用）。点会话标题旁的 **dsh-purge** → 「清洗」→ **应用**。
+2. **设置页被你自己关了。** 本机如果 profile 层 `cordis.patch.yml` 里有 `- id: ui-settings` 下面一行 `enabled: false`，设置页不出现，README 里「进设置页点应用」那条路走不通 —— 用会话标题旁的浮窗。
+3. **bundle 被静默跳过。** 启动时若有 `dsh: skipping profile bundle "dsh-purge": ...`，说明这一层根本没参与组装（包解析不到、没声明 `dsh.bundle`、或兼容门不过），此时 UI 上可能还显示「已安装」。核对 `~/.dsh/profiles/<名>/package.json` 的 `dsh.profile.bundles` 里有 `dsh-purge`，且 `node_modules/dsh-purge/package.json` 里 `dsh.bundle.patch` 存在。
+4. **升级完宿主没重打。** 官方升级会把 `resources/app` 换成新的密封 `app.asar`，补丁写在解开后的目录里，当前进程读不到。`purge_status` 里看到 `app.asar / 还在` 就是这一条 —— 重新点一次「应用」。
+5. **装到了另一个宿主。** Web 的安装不动桌面端，反之亦然。`/purge status` 打出来的 `DSH_HOME` 与 `ai_base` 必须是你正在用的那一份。
+
+前三条可以一次跑完：`node node_modules/dsh-purge/scripts/verify-mount.mjs`（在 profile 目录里跑，加 `--profile <名>` 换 profile）。只读，把 bundle 登记、包解析、本体行、重复 id 四项挨个打出来，任一项不过就非零退出。
 
 ### 怎样算装上了
 
